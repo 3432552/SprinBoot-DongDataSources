@@ -9,34 +9,38 @@ import org.springframework.stereotype.Component;
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
+
 @Component
 @Primary
 public class DynamicDataSource extends AbstractRoutingDataSource {
     @Autowired
-    @Qualifier("selectDataSource")   //获取读的数据源
-    private DataSource selectDataSource;
+    @Qualifier("ReadDataSource")   //获取读的数据源
+    private DataSource ReadDataSource;
 
     @Autowired
-    @Qualifier("updateDataSource")  //获取写的数据源
-    private DataSource updateDataSource;
+    @Qualifier("WriteDataSource")  //获取写的数据源
+    private DataSource WriteDataSource;
+
     /**
-     * 这个是主要的方法，返回的是生效的数据源名称
+     * 这个是主要的方法,从多个数据源里获得用户想走的数据源
      */
     @Override
     protected Object determineCurrentLookupKey() {
-        System.out.println("DataSourceContextHolder：：：" + DataSourceContextHolder.getDbType());
+        System.out.println("此时使用的数据源:============>" + DataSourceContextHolder.getDbType());
         return DataSourceContextHolder.getDbType();
     }
+
     /**
      * 配置数据源信息   注册数据源的操作 最终注入到datasource数据源中
      */
     @Override
     public void afterPropertiesSet() {
         Map<Object, Object> map = new HashMap<>();
-        map.put("selectDataSource", selectDataSource);
-        map.put("updateDataSource", updateDataSource);
+        map.put("ReadDataSource", ReadDataSource);
+        map.put("WriteDataSource", WriteDataSource);
         setTargetDataSources(map);
-        setDefaultTargetDataSource(updateDataSource);
+        setDefaultTargetDataSource(WriteDataSource);
         super.afterPropertiesSet();
     }
+
 }

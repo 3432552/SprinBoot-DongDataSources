@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+
 @RestController
 public class UserController {
     @Autowired
@@ -17,13 +18,14 @@ public class UserController {
     public List<User1> findUser() {
         return userService.findUser();
     }
+
     @RequestMapping("/insertUser")
-    public boolean insertUser(String name,Integer age) {
-        int result=userService.insertUser(name, age);
-        if (result>0){
+    public boolean insertUser(String name, Integer age) {
+        int result = userService.insertUser(name, age);
+        if (result > 0) {
             System.out.println("增加成功!");
             return true;
-        }else {
+        } else {
             return false;
         }
     }
